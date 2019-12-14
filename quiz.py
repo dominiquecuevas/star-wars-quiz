@@ -59,3 +59,4 @@ def homeworld(people_data):
 if __name__ == "__main__":
     people_data = people_all(data = [], url = 'https://swapi.co/api/people/')
     homeworld_data = homeworld(people_data)
+    print(homeworld_data)
