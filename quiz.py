@@ -1,6 +1,6 @@
 import requests
-
 from random import choice
+from time import sleep
 
 def search(search):
     
@@ -51,3 +51,23 @@ def people():
     return {'name': rando_person['name'], 
             rando_attribute: attribute_value
             }
+
+def people_all():
+    """Get all pages of API endpoint results"""
+
+    url = "https://swapi.co/api/people/"
+    data = []
+
+    while True:
+
+        response = requests.get(url)
+        data_new = response.json()
+        data.extend(data_new['results'])
+        url = data_new['next']
+
+        if data_new['next'] is None:
+            break
+
+        sleep(5)
+
+    return data
