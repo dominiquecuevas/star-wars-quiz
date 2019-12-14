@@ -52,22 +52,16 @@ def people():
             rando_attribute: attribute_value
             }
 
-def people_all():
-    """Get all pages of API endpoint results"""
+def people_all(data = [], url = 'https://swapi.co/api/people/'):
+    """Get all pages of API endpoint results with recursion"""
 
-    url = "https://swapi.co/api/people/"
-    data = []
+    if url == None:
+        return
 
-    while True:
-
-        response = requests.get(url)
-        data_new = response.json()
-        data.extend(data_new['results'])
-        url = data_new['next']
-
-        if data_new['next'] is None:
-            break
-
-        sleep(5)
+    response = requests.get(url)
+    data_new = response.json()
+    data.extend(data_new['results'])
+    sleep(2)
+    people_all_recursion(data, data_new['next'])
 
     return data
