@@ -62,6 +62,6 @@ def people_all(data = [], url = 'https://swapi.co/api/people/'):
     data_new = response.json()
     data.extend(data_new['results'])
     sleep(2)
-    people_all_recursion(data, data_new['next'])
+    people_all(data, data_new['next'])
 
     return data
