@@ -28,30 +28,6 @@ def people_search(search):
 
     return data
 
-def people():
-
-    url = "https://swapi.co/api/people/"
-    response = requests.get(url)
-    data = response.json()
-
-    rando_person = choice(data['results'])
-
-    attributes = ['hair_color', 'eye_color', 'homeworld']
-    rando_attribute = choice(attributes)
-
-    if rando_attribute == 'homeworld':
-        url_homeworld = rando_person['homeworld']
-        response_homeworld = requests.get(url_homeworld)
-        data_homeworld = response_homeworld.json()
-        homeworld = data_homeworld['name']
-        attribute_value = homeworld
-    else: 
-        attribute_value = rando_person[rando_attribute]
-
-    return {'name': rando_person['name'], 
-            rando_attribute: attribute_value
-            }
-
 def people_all(data = [], url = 'https://swapi.co/api/people/'):
     """Get all pages of API endpoint results with recursion"""
 
@@ -61,7 +37,25 @@ def people_all(data = [], url = 'https://swapi.co/api/people/'):
     response = requests.get(url)
     data_new = response.json()
     data.extend(data_new['results'])
-    sleep(2)
+    sleep(3)
     people_all(data, data_new['next'])
 
     return data
+
+def homeworld(people_data):
+
+    rando_person = choice(people_data)
+
+    url = rando_person['homeworld']
+    response = requests.get(url)
+    data = response.json()
+    homeworld = data['name']
+
+    return {
+            'name': rando_person['name'],
+            'homeworld': homeworld
+            }
+
+if __name__ == "__main__":
+    people_data = people_all(data = [], url = 'https://swapi.co/api/people/')
+    homeworld_data = homeworld(people_data)
