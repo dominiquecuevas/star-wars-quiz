@@ -115,7 +115,12 @@ def q_planet():
         planet_name_all.append(data_planet['name'])
 
     shuffle(planet_name_all)
-    planet = input(f"Which planet {planet_name_all} was in the film, {title}? ")
+
+    planets_string = f"{planet_name_all[0]}, {planet_name_all[1]}, or {planet_name_all[2]}"
+
+
+    planet = input(f"""Which planet was in the film, {title}? {planets_string}
+""")
 
     if planet.lower() == planet_name_true.lower():
         print("Correct!")
@@ -125,21 +130,24 @@ def q_planet():
         return 0
 
 def quiz():
-    return (
+
+    score = (
             q_homeworld() +
             q_planet() +
-            q_homeworld()
+            q_homeworld() +
+            q_planet() +
+            q_planet()
             )
+    print(f"Your score is {score}")
 
 if __name__ == "__main__":
-    print("Loading...")
+    print("Loading people data...")
     api_people_urls = get_api_people_urls(api_people_urls = [], 
                                         url = 'https://swapi.co/api/people/')
-    print("...")
+    print("Loading planet data...")
     api_planet_urls = get_api_planet_urls(api_planet_urls = [], 
                                         url = "https://swapi.co/api/planets/")
     print("Star Wars quiz")
     print("Welcome")
 
-    score = quiz()
-    print(f"Your score is {score}")
+    quiz()
