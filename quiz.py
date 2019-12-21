@@ -45,6 +45,8 @@ def planet_in_film(api_planet_urls):
     planets_true = rando_film['planets']
 
     planets_false = []
+
+    # get 2 random planets NOT in film
     while len(planets_false) < 2:
         url_p = choice(api_planet_urls)
         response_p = requests.get(url_p)
@@ -131,23 +133,40 @@ def q_planet():
 
 def quiz():
 
-    score = (
-            q_homeworld() +
-            q_planet() +
-            q_homeworld() +
-            q_planet() +
-            q_planet()
-            )
-    print(f"Your score is {score}")
+
+    questions = [q_homeworld(), q_planet(), q_homeworld(), q_planet(), q_planet()]
+    score = 0
+    for question in questions:
+        score += question
+    sleep(1)
+    print()
+    total = len(questions)
+    percent = score/total
+    print(f"Your score: {score}/5")
+    if percent < .6:
+        print("Your rank: Nerf Herder")
+        return
+    if .6 <= percent < .7:
+        print("Your rank: Padawan")
+        return
+    if .7 <= percent < .8:
+        print("Your rank: Sith Lord")
+        return
+    if .8 <= percent < .9:
+        print("Your rank: Jedi Master")
+        return
+    if .9 <= percent <= 1:
+        print("Your rank: The Senate")
+        return
 
 if __name__ == "__main__":
-    print("Loading people data...")
+    print("Hello, there!")
+    print("Star Wars quiz")
+    print("Loading...")
     api_people_urls = get_api_people_urls(api_people_urls = [], 
                                         url = 'https://swapi.co/api/people/')
-    print("Loading planet data...")
+    print("Intercepting transmissions...")
     api_planet_urls = get_api_planet_urls(api_planet_urls = [], 
                                         url = "https://swapi.co/api/planets/")
-    print("Star Wars quiz")
-    print("Welcome")
-
+    print()
     quiz()
