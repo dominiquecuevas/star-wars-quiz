@@ -141,13 +141,16 @@ def homeworld(api_people_urls):
 
 def people_eye_color(api_people_urls):
 
-    url = choice(api_people_urls)
-    response = requests.get(url)
-    data = response.json()
+    while True:
+        url = choice(api_people_urls)
+        response = requests.get(url)
+        data = response.json()
 
-    rando_person = choice(data['results'])
-    name = rando_person['name']
-    eye_color = rando_person['eye_color']
+        rando_person = choice(data['results'])
+        name = rando_person['name']
+        eye_color = rando_person['eye_color']
+        if eye_color != "unknown":
+            break
 
     return {
             'name': name,
@@ -317,7 +320,7 @@ def q_species():
                 'C': all_species[2],
                 }
 
-    answer = input(f'''Which species is {name}?
+    answer = input(f'''What species is {name}?
 A. {choices['A']}
 B. {choices['B']}
 C. {choices['C']}
@@ -355,14 +358,14 @@ def q_species_t_f():
             print(f"{name} is {species}.")
         return 0
 
-def quiz(start = "Y"):
-    if start == "N":
+def quiz(play_again = "Y"):
+    if play_again == "N":
         print("May the force be with you.")
         return
 
-    questions = [q_species_t_f(), q_species(), q_homeworld(), q_homeworld()]
-                # q_planet(), q_species(), q_planet(), q_film_year(), q_eye_color(), 
-                # q_opening_crawl()]
+    questions = [q_species_t_f(), q_species(), q_homeworld(), q_homeworld(),
+                q_planet(), q_species(), q_planet(), q_film_year(), q_eye_color(), 
+                q_opening_crawl()]
     score = 0
     for question in questions:
         score += question
@@ -397,17 +400,14 @@ def quiz(start = "Y"):
     - Darth Sidious''')
 
     while True:
-        start = input("""Would you like to play again? Y/N 
+        play_again = input("""Would you like to play again? Y/N 
     > """)
-        if start.upper().strip() != "Y" and start.upper().strip() != "N":
+        if play_again.upper().strip() != "Y" and play_again.upper().strip() != "N":
             print("Not an option!")
         else:
             break
 
-    if start.upper().strip() == "Y":
-        quiz("Y")
-    elif start.upper().strip() == "N":
-        quiz("N")
+    quiz(play_again.upper().strip())
 
 
 if __name__ == "__main__":
