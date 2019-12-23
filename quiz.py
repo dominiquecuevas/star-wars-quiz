@@ -345,7 +345,7 @@ def q_species_t_f():
                 }
     rando_choice = choice(list(choices.keys()))
 
-    answer = input(f'''True/False: {name} is {rando_choice}
+    answer = input(f'''True/False: {name}'s species is {rando_choice}
 > ''')
     if answer.title().strip() == choices[rando_choice]:
         print("Correct!")
@@ -358,13 +358,16 @@ def q_species_t_f():
             print(f"{name} is {species}.")
         return 0
 
-def quiz(play_again = "Y"):
+def quiz(play_again = ""):
     if play_again == "N":
         print("May the force be with you.")
+        r2_ascii()
         return
+    elif play_again =="Y":
+        print("Hello, there!")
 
     questions = [q_species_t_f(), q_species(), q_homeworld(), q_homeworld(),
-                q_planet(), q_species(), q_planet(), q_film_year(), q_eye_color(), 
+                q_planet(), q_species(), q_species_t_f(), q_film_year(), q_eye_color(), 
                 q_opening_crawl()]
     score = 0
     for question in questions:
@@ -376,32 +379,32 @@ def quiz(play_again = "Y"):
     print(f"Your score: {score}/{total}")
     if percent < .6:    
         print("Your rank: Protocol Droid")
-        print('''"Oh. They've encased him in Carbonite. He should be quite well protected. If he survived the freezing process, that is."
+        print('''   "Oh. They've encased him in Carbonite. He should be quite well protected. If he survived the freezing process, that is."
     - C-3PO''')
     elif .6 <= percent < .7:
         print("Your rank: Nerf Herder")
-        print('''"Who’s scruffy-looking?"
+        print('''   "Who’s scruffy-looking?"
     - Han Solo''')
     elif .7 <= percent < .8:
         print("Your rank: Padawan")
-        print('''"I don't like sand."
+        print('''   "I don't like sand."
     - Anakin Skywalker''')
     elif .8 <= percent < .9:
         print("Your rank: Sith Lord")
-        print('''"Brave of you, boy."
+        print('''   "Brave of you, boy."
     - Count Dooku''')
     elif .9 <= percent < 1:
         print("Your rank: Jedi Master")
-        print('''Wars not make one great.
+        print('''   "Wars not make one great."
     - Yoda''')
     elif percent == 1:
         print("Your rank: The Senate")
-        print('''"Did you ever hear the tragedy of Darth Plagueis The Wise?"
+        print('''   "Did you ever hear the tragedy of Darth Plagueis The Wise?"
     - Darth Sidious''')
 
     while True:
         play_again = input("""Would you like to play again? Y/N 
-    > """)
+> """)
         if play_again.upper().strip() != "Y" and play_again.upper().strip() != "N":
             print("Not an option!")
         else:
@@ -409,10 +412,41 @@ def quiz(play_again = "Y"):
 
     quiz(play_again.upper().strip())
 
+def r2_ascii():
+    print("         _____")
+    print("       .'/L|__`.")
+    print("      / =[_]O|` \ ")
+    print('      |"+_____":|')
+    print("    __:='|____`-:__")
+    print("   ||[] ||====| []||")
+    print("   ||[] | |=| | []||")
+    print("   |:||_|=|U| |_||:|")
+    print("   |:|||]_=_ =[_||:|")
+    print("   | |||] [_][]C|| |")
+    print('''   | ||-'"""""`-|| |''')
+    print("   /|\\\_\_|_|_/_//|\ ")
+    print("  |___|   /|\   |___| ")
+    print("  `---'  |___|  `---' ")
+    print("         `---'")
+    print()
+    print("This ASCII pic can be found at https://asciiart.website/index.php?art=movies/star%20wars")
+
 
 if __name__ == "__main__":
-    print("Hello, there!")
-    print("Star Wars quiz")
+    print("        _________________.   ___      .______")
+    print("       /                 |  /   \     |   _  \ ")
+    print("      |   (------|  |----` /  ^  \    |  |_)  |")
+    print("       \   \     |  |     /  /_\  \   |      /")
+    print(".-------)   |    |  |    /  _____  \  |  |\  \----.")
+    print("|__________/     |__|   /__/     \__\ | _| `._____|")
+    print("                    Q  U  I  Z                    ")
+    print("___    __    ___   ___      .______        _______.")
+    print("\  \  /  \  /  /  /   \     |   _  \      /       |")
+    print(" \  \/    \/  /  /  ^  \    |  |_)  |    |   (----`")
+    print("  \          /  /  /_\  \   |      /      \   \    ")
+    print("   \   /\   /  /  _____  \  |  |\  \-------)   |   ")
+    print("    \_/  \_/  /__/     \__\ | _| `.___________/    ")
+    print()
     print("Loading...")
     api_people_urls = get_api_people_urls(api_people_urls = [], 
                                         url = 'https://swapi.co/api/people/')
