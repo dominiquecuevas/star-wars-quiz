@@ -33,6 +33,21 @@ def get_api_planet_urls(api_planet_urls = [],
 
     return api_planet_urls
 
+def get_api_species_urls(api_species_urls = [], 
+                        url = "https://swapi.co/api/species/"):
+
+    if url == None:
+        return
+
+    api_species_urls.append(url)
+    response = requests.get(url)
+    data = response.json()
+    next_api_url = data['next']
+
+    get_api_species_urls(api_species_urls, next_api_url)
+
+    return api_species_urls
+
 def planet_in_film(api_planet_urls):
 
     url = "https://swapi.co/api/films/"
@@ -118,8 +133,6 @@ def homeworld(api_people_urls):
         homeworld_h = data_h['name']
         if homeworld_h != 'unknown':
             break
-        # print(rando_person['name'])
-        # print(homeworld_h)
 
     return {
             'name': rando_person['name'],
@@ -141,7 +154,46 @@ def people_eye_color(api_people_urls):
             'eye_color': eye_color
             }
 
+def people_species(api_people_urls, api_species_urls):
+
+    while True: 
+        url = choice(api_people_urls)
+        response = requests.get(url)
+        data = response.json()
+
+        rando_person = choice(data['results'])
+        name = rando_person['name']
+
+        url_species_list = rando_person['species']
+        if url_species_list:
+            break
+    url_species = choice(url_species_list)
+    response_species = requests.get(url_species)
+    data_species = response_species.json()
+    species = data_species['name']
+
+    species_false = []
+    while len(species_false) < 2:
+        url_species_false = choice(api_species_urls)
+        response_species_false = requests.get(url_species_false)
+        data_species_false = response_species_false.json()
+        results_species_list = data_species_false['results']
+
+        rando = choice(results_species_list)
+        rando_species_url = rando['url']
+        rando_species_false = rando['name']
+
+        if rando_species_url not in url_species_list and rando_species_false not in species_false:
+            species_false.append(rando_species_false)
+
+    return {
+            'name': name,
+            'species': species,
+            'species_false': species_false
+            }
+
 def q_homeworld():
+    print()
     homeworld_data = homeworld(api_people_urls)
     name = homeworld_data['name']
     homeworld_ = homeworld_data['homeworld']
@@ -151,10 +203,11 @@ def q_homeworld():
         print('Correct!')
         return 1
     else:
-        print(f"Wrong! The answer is {homeworld_}")
+        print(f"Wrong! The answer is {homeworld_}.")
         return 0
 
 def q_planet():
+    print()
     rando_film = planet_in_film(api_planet_urls)
     title = rando_film['title']
     url_planet = choice(rando_film['planets_true'])
@@ -189,10 +242,11 @@ C. {planet_name_all[2]}
         print("Correct!")
         return 1
     else:
-        print(f"Wrong! The answer is {planet_name_true}")
+        print(f"Wrong! The answer is {planet_name_true}.")
         return 0
 
 def q_opening_crawl():
+    print()
     opening_crawl = opening_crawl_in_film()
     title = opening_crawl['title']
     all_titles = opening_crawl['titles_false'] + [title]
@@ -202,7 +256,7 @@ def q_opening_crawl():
                 'B': all_titles[1],
                 'C': all_titles[2]
                 }
-    answer = input(f"""Which movie does this opening crawl belong to? 
+    answer = input(f"""Which movie is this opening crawl from? 
 "{opening_crawl['opening_crawl']}"
 A. {choices['A']}
 B. {choices['B']}
@@ -214,10 +268,11 @@ C. {choices['C']}
         print("Correct!")
         return 1
     else:
-        print(f"Wrong! The answer is {title}")
+        print(f"Wrong! The answer is {title}.")
         return 0
 
 def q_film_year():
+    print()
     film_year_ = film_year()
     title = film_year_['title']
     year = film_year_['year']
@@ -229,10 +284,11 @@ def q_film_year():
         print("Correct!")
         return 1
     else:
-        print(f"Wrong! The answer is {year}")
+        print(f"Wrong! The answer is {year}.")
         return 0
 
 def q_eye_color():
+    print()
     eye_color_dict = people_eye_color(api_people_urls)
     name = eye_color_dict['name']
     eye_color = eye_color_dict['eye_color']
@@ -243,15 +299,70 @@ def q_eye_color():
         print("Correct!")
         return 1
     else:
-        print(f"Wrong! The answer is {eye_color}")
+        print(f"Wrong! The answer is {eye_color}.")
         return 0
 
-def quiz():
+def q_species():
+    print()
+    species_dict = people_species(api_people_urls, api_species_urls)
+    name = species_dict['name']
+    species = species_dict['species']
+    species_false = species_dict['species_false']
 
+    all_species = species_false + [species]
+    shuffle(all_species)
+    choices = {
+                'A': all_species[0],
+                'B': all_species[1],
+                'C': all_species[2],
+                }
 
-    questions = [q_opening_crawl(), q_planet(), q_film_year(), q_homeworld(), 
-                q_eye_color(), q_homeworld(), q_planet(), q_homeworld(), q_planet(), 
-                q_planet()]
+    answer = input(f'''Which species is {name}?
+A. {choices['A']}
+B. {choices['B']}
+C. {choices['C']}
+> ''')
+    if choices.get(answer.upper().strip()) == species or answer.lower().strip() == species.lower().strip():
+        print("Correct!")
+        return 1
+    else:
+        print(f"Wrong! The answer is {species}.")
+        return 0
+
+def q_species_t_f():
+    print()
+    species_dict = people_species(api_people_urls, api_species_urls)
+    name = species_dict['name']
+    species = species_dict['species']
+    species_false = species_dict['species_false'][0]
+
+    choices = {
+                species: 'True',
+                species_false: 'False'
+                }
+    rando_choice = choice(list(choices.keys()))
+
+    answer = input(f'''True/False: {name} is {rando_choice}
+> ''')
+    if answer.title().strip() == choices[rando_choice]:
+        print("Correct!")
+        if choices[rando_choice] == 'False':
+            print(f"{name} is {species}.")
+        return 1
+    else:
+        print(f"Wrong! The answer is {choices[rando_choice]}.")
+        if choices[rando_choice] == 'False':
+            print(f"{name} is {species}.")
+        return 0
+
+def quiz(start = "Y"):
+    if start == "N":
+        print("May the force be with you.")
+        return
+
+    questions = [q_species_t_f(), q_species(), q_homeworld(), q_homeworld()]
+                # q_planet(), q_species(), q_planet(), q_film_year(), q_eye_color(), 
+                # q_opening_crawl()]
     score = 0
     for question in questions:
         score += question
@@ -264,40 +375,51 @@ def quiz():
         print("Your rank: Protocol Droid")
         print('''"Oh. They've encased him in Carbonite. He should be quite well protected. If he survived the freezing process, that is."
     - C-3PO''')
-    if .6 <= percent < .7:
+    elif .6 <= percent < .7:
         print("Your rank: Nerf Herder")
         print('''"Who’s scruffy-looking?"
     - Han Solo''')
-        return
-    if .7 <= percent < .8:
+    elif .7 <= percent < .8:
         print("Your rank: Padawan")
         print('''"I don't like sand."
     - Anakin Skywalker''')
-        return
-    if .8 <= percent < .9:
+    elif .8 <= percent < .9:
         print("Your rank: Sith Lord")
         print('''"Brave of you, boy."
     - Count Dooku''')
-        return
-    if .9 <= percent < 1:
+    elif .9 <= percent < 1:
         print("Your rank: Jedi Master")
         print('''Wars not make one great.
     - Yoda''')
-        return
-    if percent == 1:
+    elif percent == 1:
         print("Your rank: The Senate")
         print('''"Did you ever hear the tragedy of Darth Plagueis The Wise?"
     - Darth Sidious''')
-        return
+
+    while True:
+        start = input("""Would you like to play again? Y/N 
+    > """)
+        if start.upper().strip() != "Y" and start.upper().strip() != "N":
+            print("Not an option!")
+        else:
+            break
+
+    if start.upper().strip() == "Y":
+        quiz("Y")
+    elif start.upper().strip() == "N":
+        quiz("N")
+
 
 if __name__ == "__main__":
     print("Hello, there!")
     print("Star Wars quiz")
-    print("Loading transmissions...")
+    print("Loading...")
     api_people_urls = get_api_people_urls(api_people_urls = [], 
                                         url = 'https://swapi.co/api/people/')
-    print("Loading transmissions...")
+    print("Loading...")
     api_planet_urls = get_api_planet_urls(api_planet_urls = [], 
                                         url = "https://swapi.co/api/planets/")
-    print()
+    print("Loading...")
+    api_species_urls = get_api_species_urls(api_species_urls = [], 
+                        url = "https://swapi.co/api/species/")
     quiz()
