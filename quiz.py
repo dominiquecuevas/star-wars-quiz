@@ -126,6 +126,20 @@ def homeworld(api_people_urls):
             'homeworld': homeworld_h
             }
 
+def people_eye_color(api_people_urls):
+
+    url = choice(api_people_urls)
+    response = requests.get(url)
+    data = response.json()
+
+    rando_person = choice(data['results'])
+    name = rando_person['name']
+    eye_color = rando_person['eye_color']
+
+    return {
+            'name': name,
+            'eye_color': eye_color
+            }
 
 def q_homeworld():
     homeworld_data = homeworld(api_people_urls)
@@ -218,11 +232,25 @@ def q_film_year():
         print(f"Wrong! The answer is {year}")
         return 0
 
+def q_eye_color():
+    eye_color_dict = people_eye_color(api_people_urls)
+    name = eye_color_dict['name']
+    eye_color = eye_color_dict['eye_color']
+    answer = input(f"""What color are {name}'s eyes?
+> """)
+
+    if answer.lower().strip() == eye_color.lower():
+        print("Correct!")
+        return 1
+    else:
+        print(f"Wrong! The answer is {eye_color}")
+        return 0
+
 def quiz():
 
 
     questions = [q_opening_crawl(), q_planet(), q_film_year(), q_homeworld(), 
-                q_planet(), q_homeworld(), q_planet(), q_homeworld(), q_planet(), 
+                q_eye_color(), q_homeworld(), q_planet(), q_homeworld(), q_planet(), 
                 q_planet()]
     score = 0
     for question in questions:
@@ -253,6 +281,8 @@ def quiz():
         return
     if .9 <= percent < 1:
         print("Your rank: Jedi Master")
+        print('''Wars not make one great.
+    - Yoda''')
         return
     if percent == 1:
         print("Your rank: The Senate")
