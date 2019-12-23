@@ -63,6 +63,45 @@ def planet_in_film(api_planet_urls):
             'planets_false': planets_false,
             }
 
+def opening_crawl_in_film():
+    url = "https://swapi.co/api/films/"
+    response = requests.get(url)
+    data = response.json()
+
+    films = data['results']
+    rando_film = choice(films)
+    title = rando_film['title']
+
+    opening_crawl = rando_film['opening_crawl']
+    opening_crawl_snippet = " ".join(opening_crawl.split()[:10])+"...."
+
+    titles_false = []
+    while len(titles_false) < 2:
+        rando_title = choice(films)['title']
+        if rando_title != title and rando_title not in titles_false:
+            titles_false.append(rando_title)
+    
+    return {'titles_false': titles_false,
+            'title': title,
+            'opening_crawl': opening_crawl_snippet
+            }
+
+def film_year():
+    url = "https://swapi.co/api/films/"
+    response = requests.get(url)
+    data = response.json()
+
+    films = data['results']
+    rando_film = choice(films)
+    title = rando_film['title']
+
+    year = rando_film['release_date'][:4]
+
+    return {
+            'title': title,
+            'year': year
+            }
+
 def homeworld(api_people_urls):
     # random person and their homeworld
 
@@ -92,8 +131,9 @@ def q_homeworld():
     homeworld_data = homeworld(api_people_urls)
     name = homeworld_data['name']
     homeworld_ = homeworld_data['homeworld']
-    answer = input(f"Which planet is {name} from? ")
-    if answer.lower() == homeworld_.lower():
+    answer = input(f"""Which planet is {name} from?
+> """)
+    if answer.lower().strip() == homeworld_.lower().strip():
         print('Correct!')
         return 1
     else:
@@ -118,23 +158,72 @@ def q_planet():
 
     shuffle(planet_name_all)
 
-    planets_string = f"{planet_name_all[0]}, {planet_name_all[1]}, or {planet_name_all[2]}"
+    choices = {
+                'A': planet_name_all[0],
+                'B': planet_name_all[1],
+                'C': planet_name_all[2]
+                }
 
+    answer = input(f"""Which planet was in the film, "{title}"? 
+A. {planet_name_all[0]}
+B. {planet_name_all[1]}
+C. {planet_name_all[2]}
+> """)
 
-    planet = input(f"""Which planet was in the film, {title}? {planets_string}
-""")
-
-    if planet.lower() == planet_name_true.lower():
+    if choices.get(answer.upper().strip()) == planet_name_true or (
+        answer.lower().strip() == planet_name_true.lower().strip()):
         print("Correct!")
         return 1
     else:
         print(f"Wrong! The answer is {planet_name_true}")
         return 0
 
+def q_opening_crawl():
+    opening_crawl = opening_crawl_in_film()
+    title = opening_crawl['title']
+    all_titles = opening_crawl['titles_false'] + [title]
+    shuffle(all_titles)
+    choices = {
+                'A': all_titles[0],
+                'B': all_titles[1],
+                'C': all_titles[2]
+                }
+    answer = input(f"""Which movie does this opening crawl belong to? 
+"{opening_crawl['opening_crawl']}"
+A. {choices['A']}
+B. {choices['B']}
+C. {choices['C']}
+> """)
+
+    # answer given as letter or full title
+    if choices.get(answer.upper().strip()) == title or answer.lower().strip() == title.lower().strip():
+        print("Correct!")
+        return 1
+    else:
+        print(f"Wrong! The answer is {title}")
+        return 0
+
+def q_film_year():
+    film_year_ = film_year()
+    title = film_year_['title']
+    year = film_year_['year']
+
+    answer = input(f"""Which year was "{title}" released?
+> """)
+
+    if answer.strip() == year:
+        print("Correct!")
+        return 1
+    else:
+        print(f"Wrong! The answer is {year}")
+        return 0
+
 def quiz():
 
 
-    questions = [q_homeworld(), q_planet(), q_homeworld(), q_planet(), q_planet()]
+    questions = [q_opening_crawl(), q_planet(), q_film_year(), q_homeworld(), 
+                q_planet(), q_homeworld(), q_planet(), q_homeworld(), q_planet(), 
+                q_planet()]
     score = 0
     for question in questions:
         score += question
@@ -142,30 +231,42 @@ def quiz():
     print()
     total = len(questions)
     percent = score/total
-    print(f"Your score: {score}/5")
-    if percent < .6:
-        print("Your rank: Nerf Herder")
-        return
+    print(f"Your score: {score}/{total}")
+    if percent < .6:    
+        print("Your rank: Protocol Droid")
+        print('''"Oh. They've encased him in Carbonite. He should be quite well protected. If he survived the freezing process, that is."
+    - C-3PO''')
     if .6 <= percent < .7:
-        print("Your rank: Padawan")
+        print("Your rank: Nerf Herder")
+        print('''"Who’s scruffy-looking?"
+    - Han Solo''')
         return
     if .7 <= percent < .8:
-        print("Your rank: Sith Lord")
+        print("Your rank: Padawan")
+        print('''"I don't like sand."
+    - Anakin Skywalker''')
         return
     if .8 <= percent < .9:
+        print("Your rank: Sith Lord")
+        print('''"Brave of you, boy."
+    - Count Dooku''')
+        return
+    if .9 <= percent < 1:
         print("Your rank: Jedi Master")
         return
-    if .9 <= percent <= 1:
+    if percent == 1:
         print("Your rank: The Senate")
+        print('''"Did you ever hear the tragedy of Darth Plagueis The Wise?"
+    - Darth Sidious''')
         return
 
 if __name__ == "__main__":
     print("Hello, there!")
     print("Star Wars quiz")
-    print("Loading...")
+    print("Loading transmissions...")
     api_people_urls = get_api_people_urls(api_people_urls = [], 
                                         url = 'https://swapi.co/api/people/')
-    print("Intercepting transmissions...")
+    print("Loading transmissions...")
     api_planet_urls = get_api_planet_urls(api_planet_urls = [], 
                                         url = "https://swapi.co/api/planets/")
     print()
