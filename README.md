@@ -35,5 +35,8 @@ Star Wars terminal quiz using recursion and the The Star Wars API.
    \  \     /       \     /  /
     `.     /         \     .'
       `.  /._________.\  .'
-   LS   `--._________.--'     Modified Corellian YT-1300 Transport (4)
+        `--._________.--'     
+
+------------------------------------------------
+https://asciiart.website/index.php?art=movies/star%20wars
 ```
