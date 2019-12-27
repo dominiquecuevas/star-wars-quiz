@@ -387,7 +387,7 @@ def quiz(play_again = ""):
     - Han Solo''')
     elif .7 <= percent < .8:
         print("Your rank: Padawan")
-        print('''   "I don't like sand."
+        print('''   "I don't like sand. It's coarse and rough and irritating, and it gets everywhere."
     - Anakin Skywalker''')
     elif .8 <= percent < .9:
         print("Your rank: Sith Lord")
